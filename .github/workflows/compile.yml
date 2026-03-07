@@ -1,0 +1,30 @@
+name: Compile LaTeX
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install TeX Live
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive texlive-latex-extra texlive-bibtex-extra texlive-science latexmk
+
+      - name: Compile with latexmk
+        run: |
+          latexmk -pdf -interaction=nonstopmode AAA.tex
+
+      - name: Upload PDF as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: paper
+          path: AAA.pdf
