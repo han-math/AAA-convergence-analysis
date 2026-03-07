@@ -14,14 +14,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install aspell and detex
+      - name: Install aspell
         run: |
           sudo apt-get update
-          sudo apt-get install -y aspell aspell-en detex
+          sudo apt-get install -y aspell aspell-en
 
       - name: Run spell check on LaTeX source
         run: |
-          detex AAA.tex | aspell list --lang=en --mode=none --add-extra-dicts=.aspell.en.pws | sort -u > misspelled.txt || true
+          # Use aspell's TeX mode to ignore LaTeX commands and math
+          aspell list --lang=en --mode=tex --add-extra-dicts=.aspell.en.pws < AAA.tex | sort -u > misspelled.txt || true
           if [ -s misspelled.txt ]; then
             echo "Misspelled words found:"
             cat misspelled.txt
