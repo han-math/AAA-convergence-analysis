@@ -1,0 +1,31 @@
+name: Spell Check
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  spellcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install aspell and detex
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y aspell aspell-en detex
+
+      - name: Run spell check on LaTeX source
+        run: |
+          detex AAA.tex | aspell list --lang=en --mode=none --add-extra-dicts=.aspell.en.pws | sort -u > misspelled.txt || true
+          if [ -s misspelled.txt ]; then
+            echo "Misspelled words found:"
+            cat misspelled.txt
+            exit 1
+          else
+            echo "No spelling errors."
+          fi
