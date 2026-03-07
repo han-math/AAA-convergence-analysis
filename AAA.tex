@@ -1,0 +1,674 @@
+\documentclass[12pt,a4paper]{article}  % Use this line if this document will be released
+%\documentclass[12pt,a4paper,draft]{article}  % Use this line if this document is a draft
+\usepackage{ifdraft}
+
+
+%% Bibliography
+\usepackage{etoolbox}
+\newcommand{\bibfile}{\jobname.bib}  % Name of the BibTeX file.
+% ref.bib should be a symbolic link to the universal BibTeX file, which should be a local copy of
+% https://github.com/equipez/bibliographie/blob/main/ref.bib
+% Run `getbib` in the current directory under the draft mode to get the BibTeX file containing only
+% the cited references. The name will be xyz.bib if this TeX file is xyz.tex.
+\newcommand{\universalbib}{ref.bib}
+\ifdraft{\IfFileExists{\universalbib}{\renewcommand{\bibfile}{\universalbib}}{}}{}
+% The counter `cite' is used to count the number of citations.
+\newcounter{cite}
+\pretocmd{\cite}{\stepcounter{cite}}{}{}
+
+
+%% Add line numbers in draft mode
+\RequirePackage[mathlines]{lineno}
+%\ifdraft{\linenumbers}{}
+\renewcommand{\linenumberfont}{\normalfont\scriptsize\sffamily\color{gray}}
+\setlength{\linenumbersep}{\marginparsep}
+
+
+%% Geometry
+%\voffset=-1.5cm \hoffset=-1.4cm \textwidth=16cm \textheight=22.0cm  % Luis' setting
+\usepackage[a4paper, textwidth=16.0cm, textheight=22.0cm]{geometry}
+\renewcommand{\baselinestretch}{1.2}
+
+
+%% Basic packages
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{mathtools}  % Provides \coloneqq
+\usepackage{empheq}
+\usepackage{xcolor}
+\usepackage[bbgreekl]{mathbbol}
+\DeclareSymbolFontAlphabet{\mathbbm}{bbold}
+\DeclareSymbolFontAlphabet{\mathbb}{AMSb}
+\usepackage{bbm}
+\usepackage{upgreek}
+\usepackage{accents}
+\usepackage{xspace}
+\usepackage{rotating}
+\usepackage{multirow,booktabs}
+\usepackage[en-US]{datetime2}
+
+
+%% Format of the table of content
+\usepackage[normalem]{ulem}
+\usepackage[toc,page]{appendix}
+\renewcommand{\appendixpagename}{\Large{Appendix}}
+\renewcommand{\appendixname}{Appendix}
+\renewcommand{\appendixtocname}{Appendix}
+%\usepackage{sectsty}
+\setcounter{tocdepth}{2}
+
+
+%% Section title style
+\usepackage{sectsty}
+\sectionfont{\large}
+\subsectionfont{\large}
+
+
+%% Some colors
+\definecolor{darkblue}{rgb}{0,0.1,0.5}
+\definecolor{darkgreen}{rgb}{0,0.5,0.1}
+\definecolor{darkyellow}{rgb}{0.65,0.65,0.01}
+
+
+%% Todo notes
+\ifdraft{
+    \setlength{\marginparwidth}{2.42cm}
+    \usepackage[tickmarkheight=3pt,textsize=small,backgroundcolor=blue!16,linecolor=purple,bordercolor=purple]{todonotes}
+}{
+    \newcommand{\todo}[1]{}
+    \newcommand{\listoftodos}{}
+}
+
+
+%% Graph, tikz and pgf
+%\usepackage{subfigure}
+\setlength{\unitlength}{1mm}
+% The \unitlength command is a Length command. It defines the units used in the Picture Environment.
+\usepackage{graphicx}
+%\usepackage{tikz,tikzscale,pgf,pgfarrows,pgfnodes,filecontents,tikz-cd}
+\usepackage{tikz,tikzscale,pgf}
+\usetikzlibrary{arrows,arrows.meta,patterns,positioning,decorations.markings,shapes}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+\usepackage[justification=centering]{caption}
+\usepgfplotslibrary{fillbetween}
+\pgfplotsset{compat=1.11}
+
+
+%% Turn off some unharmful warnings in draft mode
+%% N.B.: DO NOT use `silence` together with `hyperref`. They will cause an infinite loop.
+\ifdraft{
+    \usepackage{silence}
+    \WarningFilter{xcolor}{Incompatible color definition on}
+    \WarningFilter{hyperref}{Draft mode on}
+    \WarningFilter{refcheck}{Unused label}
+    \WarningFilter{microtype}{`draft' option active}
+    \WarningFilter{latex}{Writing or overwriting file} % Mute the warning about 'writing/overwriting file'
+    \WarningFilter{latex}{Writing file} % Mute the warning about 'writing/overwriting file'
+    \WarningFilter{latex}{Tab has} % Mute the warning about 'Tab has been converted to Blank Space'
+    \WarningFilter{latex}{Marginpar on page} % Mute the warning about 'Marginpar on page xx moved'
+    \WarningFilter{latex}{author given} % Mute the warning about 'No \author given'
+}{}
+
+
+%% Hyperref, url, and email
+%% N.B.: DO NOT use `silence` together with `hyperref`. They will cause an infinite loop.
+\ifdraft{\usepackage{refcheck}\newcommand{\url}{\texttt}}{
+    \usepackage{hyperref}
+    \hypersetup{colorlinks, linkcolor=darkblue, anchorcolor=darkblue, citecolor=darkblue, urlcolor=darkblue}
+    \usepackage{url}
+} % Check unused labels
+\newcommand{\email}{\texttt}
+
+
+%% Enumerate and itemize
+\usepackage{eqlist}
+\usepackage{enumitem}
+\setlist[itemize]{leftmargin=*}
+\setlist[enumerate]{leftmargin=*,label=\normalfont{(\alph*)}}
+
+
+%% Algorithm environment
+\usepackage[section]{algorithm}
+\usepackage{algpseudocode,algorithmicx}
+\newcommand{\INPUT}{\textbf{Input}}
+\newcommand{\FOR}{\textbf{For}~}
+\algrenewcommand\algorithmicrequire{\textbf{Input:}}
+\algrenewcommand\algorithmicensure{\textbf{Output:}}
+\algrenewcommand\alglinenumber[1]{\normalsize #1.}
+\newcommand*\Let[2]{\State #1 $=$ #2}
+
+
+%% Theorem-like environments
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{conjecture}{Conjecture}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{problem}{Problem}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{assumption}{Assumption}[section]
+\newtheorem{example}{Example}[section]
+\newtheorem{question}{Question}[section]
+% Change theoremstyle to ``definition'', which uses textnormal for the text.
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{remark}{Remark}[section]
+% proof
+\usepackage{xpatch}
+\xpatchcmd{\proof}{\itshape}{\normalfont\proofnamefont}{}{}
+\newcommand{\proofnamefont}{\bfseries}
+
+%% Equation numbering
+\numberwithin{equation}{section}
+
+
+%% Fine tuning
+\usepackage{microtype}
+\usepackage[nobottomtitles*]{titlesec} % No section title at the bottom of pages
+% Prevent footnote from running to the next page
+\interfootnotelinepenalty=10000
+% No line break in inline math
+\interdisplaylinepenalty=10000
+\relpenalty=10000
+\binoppenalty=10000
+% No widow or orphan lines
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+
+
+% Use @ to put 1 math unit (mu) in math
+% See https://nhigham.com/2013/01/07/fine-tuning-spacing-in-latex-equations/
+% and also TeXbook p. 155.
+\mathcode`@="8000{\catcode`\@=\active\gdef@{\mkern1mu}}
+
+
+%% Operators, commands
+\usepackage{relsize}
+\usepackage{nccmath}
+%\DeclareMathOperator*{\mcap}{\,\medmath{\bigcap}\,}
+%\DeclareMathOperator*{\mcup}{\,\medmath{\bigcup}\,}
+\DeclareMathOperator*{\mcap}{\,\mathsmaller{\bigcap}\,}
+\DeclareMathOperator*{\mcup}{\,\mathsmaller{\bigcup}\,}
+%\renewcommand{\cap}{\mcap}
+%\renewcommand{\cup}{\mcup}
+
+\newcommand{\ceil}[1]{ {\lceil{#1}\rceil} }
+\newcommand{\floor}[1]{ {\lfloor{#1}\rfloor} }
+
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\sort}{sort}
+\DeclareMathOperator*{\Argmax}{Argmax}
+\DeclareMathOperator*{\Argmin}{Argmin}
+\DeclareMathOperator*{\Arglocmin}{Arglocmin}
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\diag}{diag}
+\DeclareMathOperator*{\Diag}{Diag}
+\DeclareMathOperator{\Span}{span}
+\DeclareMathOperator{\med}{med}
+\DeclareMathOperator{\essinf}{essinf}
+\DeclareMathOperator{\cl}{cl}
+\DeclareMathOperator{\vol}{vol}
+\DeclareMathOperator{\comp}{C}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\range}{range}
+\DeclareMathOperator{\card}{card}
+\DeclareMathOperator{\diam}{diam}
+\DeclareMathOperator{\dist}{dist}
+\newcommand{\disth}{{\operatorname{\updelta_{\sss{H}}}}}
+\newcommand{\ind}{\mathbbm{1}}
+%\newcommand*{\defeq}{\stackrel{\mbox{\normalfont\tiny{\textnormal{def}}}}{=}}
+\newcommand\defeq{\mathrel{\overset{\makebox[0pt]{\mbox{\normalfont\tiny\sffamily def}}}{=}}}
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\BB}{\mathcal{B}}
+\renewcommand{\SS}{\mathbb{S}}
+\newcommand{\TT}{\mathcal{T}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\FF}{\mathcal{F}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\XX}{\mathcal{X}}
+\newcommand{\sset}{\mathcal{S}}
+\newcommand{\pen}{h}
+\newcommand{\penpar}{\mu}
+\newcommand{\res}{\rho}
+\newcommand{\col}{r}
+\newcommand{\ofd}{\mathcal{F}}
+\newcommand{\stf}[1]{\mathbb{S}^{#1}}
+\newcommand{\sss}[1]{{\scriptscriptstyle{#1}}}
+\newcommand{\sK}{{\scriptscriptstyle{K}}}
+\newcommand{\sT}{{\scriptscriptstyle{T}}}
+\newcommand{\fro}{{\scriptstyle{\textnormal{F}}}}
+\newcommand{\trs}{{\scriptstyle{\mathsf{T}}}}
+\newcommand{\hmt}{{\scriptstyle{{\mathsf{H}}}}}
+\newcommand{\pin}{{\scriptstyle{{\mathsf{+}}}}}
+\newcommand{\inv}{{-1}}
+\newcommand{\adj}{*}
+\newcommand{\ones}{\mathbf{1}}
+
+\newcommand{\cs}{\text{c}}
+\newcommand{\hp}{\circ}
+\newcommand{\cc}{\sss{\textnormal{C}}}
+\newcommand{\dec}{\sss{\textnormal{D}}}
+\newcommand{\cauchy}{\sss{\textnormal{C}}}
+\newcommand{\scauchy}{\sss{\textnormal{S}}}
+\newcommand{\crit}{\textnormal{crit}}
+\newcommand{\rsg}{\hat{\partial}}
+\newcommand{\gsg}{\partial}
+\newcommand{\dom}{\textnormal{dom}}
+\newcommand{\tf}{{\textnormal{f}}}
+\newcommand{\tg}{{\textnormal{g}}}
+\newcommand{\ts}{{\textnormal{s}}}
+\newcommand{\st}{\textnormal{s.t.}}
+\newcommand{\etc}{{etc.}\xspace}
+\newcommand{\ie}{{i.e.}\xspace}
+\newcommand{\eg}{{e.g.}\xspace}
+\newcommand{\etal}{{et al.}\xspace}
+\newcommand{\iid}{\text{i.i.d.}\xspace}
+\newcommand{\as}{\text{a.s.}\xspace}
+
+\newcommand{\me}{\mathrm{e}}
+\newcommand{\md}{\mathrm{d}}
+\newcommand{\mi}{\mathrm{i}}
+\newcommand{\lev}{\mathrm{lev}}
+\newcommand{\bA}{\mathbf{A}}
+\newcommand{\bx}{\mathbf{u}}
+%\newcommand{\bb}{\mathbf{f}}
+\newcommand{\bb}{\mathbf{r}}
+\newcommand{\nov}{n_{\textnormal{o}}}
+\xspaceaddexceptions{]\}}
+% tex.stackexchange.com/questions/15252/why-does-xspace-behave-differently-for-parenthesis-vs-braces-brackets
+\newcommand{\MATLAB}{\textsc{Matlab}\xspace}
+\newcommand{\octave}{\mbox{GNU Octave}\xspace}
+\newcommand{\prblm}{\texttt}
+\DeclareMathAlphabet{\mathsfit}{T1}{\sfdefault}{\mddefault}{\sldefault}
+\SetMathAlphabet{\mathsfit}{bold}{T1}{\sfdefault}{\bfdefault}{\sldefault}
+\newcommand{\prbb}{\mathsfit{p}}
+\newcommand{\pp}{\mathsf{p}}
+\newcommand{\qq}{\mathsf{q}}
+\newcommand{\ttt}{\mathsfit{t}}
+\newcommand{\tol}{\varepsilon}
+\newcommand{\bt}{\mathbf{t}}
+\newcommand{\br}{\mathbf{r}}
+\newcommand{\dd}{\mathbf{d}}
+\newcommand{\ii}{\mathbf{i}}
+\newcommand{\jj}{\mathbf{j}}
+\newcommand{\xx}{\mathbf{x}}
+\renewcommand{\pp}{\mathbf{p}}
+\renewcommand{\ggg}{\mathbf{g}}
+\newcommand{\GG}{\mathbf{G}}
+\DeclareMathOperator{\expc}{\mathbb{E}}
+\renewcommand{\Pr}{\mathbb{P}}
+\newcommand{\lb}{\underline}
+\newcommand{\ub}{\overline}
+
+% mathlcal font
+\DeclareFontFamily{U}{dutchcal}{\skewchar\font=45 }
+\DeclareFontShape{U}{dutchcal}{m}{n}{<-> s*[1.0] dutchcal-r}{}
+\DeclareFontShape{U}{dutchcal}{b}{n}{<-> s*[1.0] dutchcal-b}{}
+\DeclareMathAlphabet{\mathlcal}{U}{dutchcal}{m}{n}
+\SetMathAlphabet{\mathlcal}{bold}{U}{dutchcal}{b}{n}
+
+% mathscr font (supporting lowercase letters)
+%\usepackage[scr=dutchcal]{mathalfa}
+%\usepackage[scr=esstix]{mathalfa}
+%\usepackage[scr=boondox]{mathalfa}
+%\usepackage[scr=boondoxo]{mathalfa}
+\usepackage[scr=boondoxupr]{mathalfa}
+%\newcommand{\model}{\mathscr{h}}
+\newcommand{\model}{\tilde{f}}
+\newcommand{\rmod}{F}
+
+\newcommand{\Set}[1]{\mathcal{#1}}
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it} % The mathpzc font
+\newcommand{\slv}{\mathpzc}
+% mathpzc looks great, but it stops working on 19 Feb 2020 for no reason.
+%\newcommand{\slv}{\mathscr}
+\newcommand{\software}{\texttt}
+\DeclareMathOperator{\eff}{\mathsf{e}\;\!}
+\DeclareMathOperator{\Eff}{\mathsf{E}\;\!}
+\newcommand{\out}{{\text{out}}}
+
+
+%% Commands for revision
+\newcommand{\red}[1]{\textcolor{red}{#1}}
+\newcommand{\blue}[1]{\textcolor{blue}{#1}}
+\newcommand{\green}[1]{\textcolor{darkgreen}{#1}}
+\newcommand{\TYPO}[1]{{\color{orange}{#1}}}
+\newcommand{\MISTAKE}[1]{{\color{violet}{#1}}}
+\newcommand{\REPHRASE}[1]{{\color{darkgreen}{#1}}}
+\newcommand{\REVISE}[1]{{\color{blue}{#1}}}
+\newcommand{\REVISEred}[1]{{\color{red}{#1}}}
+\newcommand{\COMMENT}{\todo}  % Needs the todonotes package
+%\newcommand{\COMMENT}[1]{\textcolor{brown}{{\small{(comment: #1)}}}}  % This puts comments inline
+
+% Use the following if revision is finished
+%\newcommand{\TYPO}{}
+%\newcommand{\MISTAKE}{}
+%\newcommand{\REPHRASE}{}
+%\newcommand{\REVISE}{}
+%\newcommand{\REVISEred}{}
+%\newcommand{\COMMENT}[1]{}  % Input ignored.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Convergence Analysis and Recent Improvements of the AAA Algorithm}
+
+\date{\DTMnow}
+
+\author{Han
+    \thanks{Sun Yat-Sen University}
+    %\and
+    %Author2
+    %\thanks{Information2}
+}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This article first summarizes the core of the AAA algorithm, including barycentric rational representation, greedy point selection, least-squares steps, iteration stopping criterion, and cleanup strategy for Froissart doubles. Then, this article discuss three convergence properties of the AAA algorithm in sequence. Based on the analysis in this article, it is concluded that measure-based convergence is the most suitable convergence for the AAA algorithm, and we discuss how the AAA algorithm can achieve it under appropriate assumptions. Finally, this article introduces three improved algorithms for the AAA algorithm and analyzes their improvement points then relate them to the convergence analysis.
+\end{abstract}
+
+\textbf{Keywords}: the AAA algorithm, convergence, Continuum AAA, NL-AAA, AAA-Lawson
+
+\newpage
+\tableofcontents
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+Since the introduction of the AAA (adaptive Antoulas–Anderson) algorithm by Nakatsukasa et al. in 2018 \cite{Nakatsukasa_2018}, the theory and practice of rational approximation have seen a significant breakthrough. Owing to its remarkable speed, robustness, and flexibility, the AAA algorithm has rapidly established itself as an essential tool in scientific computing, with applications that span across analytic continuation, signal processing, model order reduction, and nonlinear eigenvalue problems, among others.
+
+However, as the algorithm's application scope continues to expand, the theoretical understanding of its convergence behavior has lagged considerably behind its practical success. Unlike traditional optimization-based methods, the AAA algorithm does not seek to satisfy any optimality conditions; instead, it employs a locally greedy descent strategy. While this design circumvents the complexities of nonlinear optimization, it introduces fundamental difficulties for theoretical analysis. Specifically, at each step, the algorithm determines the barycentric weights via a linearized least-squares approximation and subsequently enriches the support point set by selecting the point where the current approximation error is maximal. The coupling between this linearized approximation and greedy selection makes it exceptionally challenging to theoretically characterize convergence rates, establish error bounds, or even derive sufficient conditions for convergence.
+
+More critically, numerical experiments reveal that the convergence behavior of the AAA algorithm is highly problem-dependent. For analytic functions, the algorithm often exhibits super-exponential convergence. Yet, when the target function possesses branch points, cusps, or points of non-differentiability, convergence may slow dramatically or even stall. In particular, when the denominator varies significantly across the approximation domain, the discrepancy between the linearized error and the true nonlinear error becomes pronounced, leading to oscillatory error curves and unstable convergence. 
+
+Furthermore, the definition of algorithm convergence is also crucial. When the AAA algorithm is applied to a discrete set of points, the algorithm is guaranteed to terminate after a finite number of iterations, and the significance of discussing convergence is not so obvious. So, the difficulty here lies not in whether the algorithm can reduce the error below a prescribed tolerance on a discrete set of points, but in whether the sequence of approximations $\{r_m\}$ generated by the AAA algorithm can approximate the target function $f$ in a strong sense, such as a uniform norm on a continuous domain $E$ as the order of the rational function increases or the sampling becomes denser. On the one hand, Froissart doublets may occur in rational approximation, which makes many classical conclusions only hold in a weaker sense rather than unconditional uniform convergence; On the other hand, the construction of AAA algorithm does not guaranty that the resulting rational function has no poles within the approximate domain, and the appearance of poles within the domain will fundamentally undermine the error control in a strong sense.
+
+Therefore, a deep understanding of the convergence properties of the AAA algorithm, including the conditions under which convergence is guaranteed, the rate at which it occurs, and the mechanisms underlying its failure modes, has emerged as a pressing challenge in the field of rational approximation. This article aims to investigate some of these issues.
+
+\section{The Core of AAA Algorithm}
+\subsection{Problem Setup and Notation}
+Let $Z=\{z_1,\dots,z_M\}\subset E\subset \mathbb{C}$ be a finite set of sample points with $M\ge1$. We assume that a target function $f$ is given at least on $Z$,
+either via an analytic expression or as discrete data values $f(z_i)$. The AAA algorithm constructs a sequence of rational approximants $r_m$ of increasing degree by selecting support points $\{z_1,\dots,z_m\}\subset Z$ adaptively and computing associated weights $w_1,\dots,w_m$.
+
+At iteration m, denote the set of non-support sample points by
+\[
+Z^{(m)}\coloneqq Z \setminus \{z_1,\dots,z_m\}.
+\]
+
+\subsection{Barycentric Rational Representation}
+The AAA algorithm represents $r$ in barycentric form as a quotient of two partial-fraction sums
+\begin{equation}
+    r(z)=\frac{n(z)}{d(z)}=\frac{\sum\limits_{j=1}^m\frac{w_jf_j}{z-z_j}}{\sum\limits_{j=1}^m\frac{w_j}{z-z_j}},  \label{eq:r}
+\end{equation}
+where $z_1,\dots,z_m$ are distinct support points, $f_j=f(z_j)$, and $w_j$ are weights.
+
+Let $\ell(z)=\prod\limits_{j=1}^m (z-z_j)$ be a polynomial. Defining $p(z)=\ell(z)n(z)$ and $q(z)=\ell(z)d(z)$, then we can obtain a standard polynomial quotient $r(z)=p(z)/q(z)$, where the degree of polynomials $p$ and $q$ is less than or equal to $m-1$. Hence, the barycentric formula produces a rational function of type $(m-1,m-1)$.
+
+The above barycentric form gives an effective interpolation function. When $w_j$ is nonzero, although the above equation exhibits $\infty/\infty$ non-definiteness at $z=z_j$, the singularity can be eliminated and so have $r(z_j)=f_j$. Therefore, in the case where the weights are not zero, $r$ is a rational interpolation function for the support point data. The goal of the AAA algorithm is to use this barycentric rational representation to construct rational function approximations.
+
+\subsection{Greedy Point Selection and Least-Squares}
+The AAA algorithm constructs $r$ iteratively. At each step, it first selects a new support point $z_m$ $(m=1, 2,\cdots )$ by a greedy rule, and then computes weights $w_1,\cdots, w_m$ by solving a least-squares problem over $Z^{(m)}$. The specific steps are explained as follows.
+
+The goal is an approximation
+\begin{equation}
+    f(z)\approx\frac{n(z)}{d(z)}, \quad z\in Z, \label{eq:approx}
+\end{equation}
+and the AAA linearizes this into
+\begin{equation}
+    f(z)d(z)\approx n(z), \quad z\in Z^{(m)}, \label{eq:linearized}
+\end{equation}
+where the restriction to $Z^{(m)}$ is because $n(z)$ and $d(z)$ will generically have poles at $z_1,\cdots,z_m$, so the above equation would not make sense over all $z\in Z$.
+
+At step m of the iteration, first, the next support point $z_m$ is chosen as a point in $Z^{(m-1)}$ where the nonlinear residual $|f(z)-r_{m-1}(z)|$ reaches its maximum. The weights are then chosen with normalization $||w||_2=1$ to minimize the discrete 2-norm of the linearized residual
+\begin{equation}
+    \min\limits_{||w||_2=1} ||fd-n||_{\ell^2(Z^{(m)})}, \quad w=(w_1,\dots,w_m)^T. \label{eq:linearized residual}
+\end{equation}
+
+The AAA algorithm assumes that $Z^{(m)}$ has at least m points and that $m\le M/2$, ensuring the least-squares problem is well-posed.
+
+We can use linear algebra to expand the explanation. Let $Z^{(m)}$ and $F^{(m)}=f(Z^{(m)})$ be the vectors of non-support points and their values. The residual vector can be written as a matrix-vector product, leading to
+\begin{equation}
+    \min\limits_{||w||_2=1}||A^{(m)}w||_2, \label{eq:matrix residual}
+\end{equation}
+where $A^{(m)}\in\mathbb{C}^{(M-m)\times m}$ is the Loewner matrix with
+\[
+A_{i,j}^{(m)}=\frac{F_i^{(m)}-f_j}{Z_i^{(m)}-z_j}.
+\]
+
+Take the thin SVD of $A^{(m)}$, we have $A^{(m)}=U\Sigma V^*$,
+where $U\in \mathbb{C}^{(M-m)\times m}$ has orthonormal columns, V $\in\mathbb{C}^{m\times m}$ is unitary, $\Sigma=diag(\sigma_1,\dots,\sigma_m)$ with $\sigma_1\ge\dots\sigma_m\ge0$ and the columns of $V$ are the right singular vectors.
+
+Write $w=Vy$. Because $V$ is unitary, $||w||_2=||y||_2$. Then
+\[
+||A^{(m)}w||_2=||U\Sigma V^*Vy||_2=||U\Sigma y||_2.
+\]
+
+Since $U$ has orthonormal columns, it preserves norms on $\mathbb{C}^m$:
+\[
+||U\Sigma y||_2=||\Sigma y||_2.
+\]
+
+Thus the problem \eqref{eq:matrix residual} becomes
+\begin{equation}
+    \min\limits_{||y||_2=1}||\Sigma y||_2. \label{eq:trans}
+\end{equation}
+
+Since $\Sigma$ is a diagonal $m\times m$, 
+\[
+||\Sigma y||_2^2=\sum\limits_{j=1}^m\sigma_j^2|y_j|^2, \quad \sum\limits_{j=1}^m|y_j|^2=1,
+\]
+and the minimum is achieved at $y=e_m$, giving the minimizer is
+\begin{equation}
+    w=Ve_m=v_m. \label{eq:w}
+\end{equation}
+
+In conclusion, we can solve \eqref{eq:matrix residual} using the SVD, taking $w$ as the final right singular vector in a reduced SVD $A^{(m)}=U\Sigma V^*$.
+
+Therefore, the problem of finding the weights through least-squares in the iteration is transformed into the SVD of a Loewner matrix $A^{(m)}$, and observing the general term structure of $A^{(m)}$ can further simplify the calculation.
+
+For efficient evaluation, the AAA algorithm uses the Cauchy matrix $C^{(m)}\in\mathbb{C}^{(M-m)\times m}$ :
+\[
+C_{i,j}^{(m)}=\frac{1}{Z_i^{(m)}-z_j},
+\]
+and diagonal matrices $S_F=diag(F_1^{(m)},\dots,F_{M-m}^{(m)})$, $S_f=diag(f_1,\dots,f_m)$, giving:
+\begin{equation}
+    A^{(m)}=S_FC-CS_f.  \label{eq:decompose of A}
+\end{equation}
+
+Once $w$ is found with the SVD, we can compute the $(M-m)$-vectors $N$ and $D$ with
+\begin{equation}
+    N=C(w\odot \vec{f}), D=Cw,   \label{eq:N,D}
+\end{equation}
+where $\odot$ means the Hadamard product and $\vec{f}=(f_1,\dots,f_m)^T$.
+
+These correspond to the values of $n(z)$ and $d(z)$ at the points $z\in Z^{(m)}$. Finally, to obtain an approximation $M$-vector $R$ corresponding to $r(z)$ for all $z\in Z$, we set $R(Z)=f(Z)$ and $R(Z^{(m)})=N./D$. We then select the point in $Z^{(m)}$ with the largest residual and proceed to the next iteration.
+
+\subsection{Stopping Criterion and Cleanup Strategy}
+The iteration terminates when the relative nonlinear residual on the test set $Z^{(m)}$ falls below a tolerance
+\begin{equation}
+    \max_{z\in Z^{(m)}}|f(z)-r_m(z)|\le \text{tol}\cdot \max_{z\in Z}|f(z)|. \label{eq:Stopping}
+\end{equation}
+
+However, approximations that satisfy this criterion may contain Froissart doublets, which are pole-zero pairs that almost cancel each other out. Numerically, these poles are accompanied by extremely small residues. Although they have little impact on the function value, the pole in the center can cause the function to approach infinity locally, seriously disrupting the uniform convergence of the approximation function. Therefore, the AAA algorithm includes a cleaning mechanism for Froissart doublets.
+
+In the AAA algorithm, these doublets are identified by inspecting the residues of the computed poles. If a pole has a residue with magnitude less than a threshold, it is flagged as spurious. The algorithm then performs a cleanup step: it removes the support point $z_j$ nearest to the spurious pole from the basis and re-solves \ref{eq:linearized} --- 
+the least-squares problem, with the reduced support set. This post-processing ensures that the final approximation reduces the presence of these doubles effectively.
+
+The article \cite{Nakatsukasa_2018} points out that using a default tolerance of $10^{-13}$ for termination conditions is effective, and the threshold for spurious poles can also be set to $10^{-13}$ accordingly.
+
+\section{Discussion on Several Convergence}
+In this section, we introduce three notions of convergence. One is about the convergence of the algorithm, which is guaranteed on a finite sample set. The other is the uniform convergence. Due to the existence of poles and Froissart doublets, uniform convergence can be prevented. Finally, we can choose a
+weaker but still mathematically significant convergence in measure as the main focus of our discussion.
+
+\subsection{Termination of the AAA Iteration}
+Since each new support point is selected from a finite set, the pool of available points is eventually exhausted, so the iteration must terminate in finitely many steps.
+
+Even when the iteration terminates, yielding a rational approximant $r_m$, the stopping criterion only measures the error on the finite sample set $Z$, and does not guarantee a good approximation on the continuous domain $E$. At the same time, poles and Froissart doublets may occur. Therefore, algorithmic termination is guaranteed, but does not provide a meaningful convergence statement on a continuum domain. 
+
+\subsection{Uniform Convergence}
+We say $r_m\to f$ uniformly on $E$ if for every $\epsilon>0$ there exists $m_0$ such that $||f-r_m||_{L^\infty(E)}<\epsilon$ for all $m\ge m_0$.
+
+However, uniform convergence is too strong a requirement to serve as the baseline for the AAA algorithm. This is because it is possible for $||f-r_m||_{\ell^\infty(Z)}$ to be small while $||f-r_m||_{L^\infty(E)}$ is large; the latter norm is sensitive to isolated poles that may lie between sample points. These poles may be inherent to the objective function $f$, introduced by the denominator of the constructed rational function, or appear in Froissart doublets.
+
+Consequently, we are led to introduce a weaker notion of convergence that is particularly effective in handling poles.
+
+\subsection{Convergence in measure}
+Firstly, we define convergence in measure on $E$: if 
+\[
+\forall\alpha>0,\forall\epsilon>0,\mu(z\in E:|f(z)-r_m(z)|>\alpha)<\epsilon
+\]
+holds as the number of iteration steps $m$ increases until the final iteration stops. 
+
+
+We will then prove that, under certain conditions, the AAA algorithm has convergence in measure.
+
+As previously analyzed, there are two difficulties here. Firstly, it is necessary to address the issue of poles, which can be achieved by excluding a bad set in the original region and proving that the measure of the bad set tends towards 0. Then the algorithm only ensures an approximation on the sampling points, so it needs to be included in the discussion of continuous region distance, which requires us to make some good assumptions about the distribution of sampling points.
+
+To begin with the proof, we first deal with the poles. The number of poles is finite, so we can carve out small neighborhoods around the poles. We define the set of poles as $P_m$, and choose an open neighborhood $U_{m,\epsilon}\supset P_m$ such that
+\begin{equation}
+   \forall\epsilon>0,\mu(U_{m,\epsilon})<\frac{\epsilon}{2}.  \label{eq:bad set}
+\end{equation}
+
+Then we take the good set $G_{m,\epsilon}$ as 
+\[
+G_{m,\epsilon}=E\setminus U_{m,\epsilon}.
+\]
+
+Since there are no poles on $G_{m,\epsilon}$, the denominator of $r_m$ is non-zero on $G_{m,\epsilon}$. Therefore, on $G_{m,\epsilon}$, $r_m$ is a rational function with a non-zero denominator, making it smooth. At the same time, $|f-r_m|$ tends towards 0 as the iteration process in the sampling point set, so the key is to approximate the continuous field with the sampling point set. In the following text, we take $\mu$ as a Borel probability measure on $E$.
+
+Assume $f$ is Lipschitz, and let $0\le\chi_m\le1$ be a Lipschitz cutoff function that vanishes in a neighborhood of the poles of $r_m$ and equals $1$ on the good region away from them. Since $r_m$ is smooth on $\operatorname{supp}(\chi_m)$, the function
+\[
+g_m(z)=|f(z)-r_m(z)|\chi_m(z)
+\]
+is Lipschitz on $E$.
+
+Let $L_m=\text{Lip}(g_m)$ and $\mu_M=\frac{1}{M}\sum\limits_{i=1}^M\delta_{z_i}$. Assume $L_m>0$, define $\varphi=g_m/L_m$, then $\text{Lip}(\varphi)\le1$, based on the Kantorovich-Rubinstein duality
+\begin{align*}
+    W_1(\mu,\mu_M)
+    &=\sup\limits_{\text{Lip}(\varphi)\le1}|\int_E\varphi\,d\mu-\int_E\varphi\,d\mu_M|\\
+    &\ge|\int_E\varphi\,d\mu-\int_E\varphi\,d\mu_M|.
+\end{align*}
+
+Multiply by $L_m$ yields
+\begin{equation}
+    |\int_Eg_m\,d\mu-\int_Eg_m\,d\mu_M|\le L_m\,W_1(\mu,\mu_M).\label{approximate the continuous field}
+\end{equation}
+
+If $L_m=0$, then $g_m$ can only be 0 and the estimate is trivial.
+
+Then, let $\eta_{m,M}=||f-r_m||_{\ell^\infty(Z^{(m)})}$, then based on \eqref{approximate the continuous field}
+\begin{align*}
+\int_E g_m \, d\mu
+&\le \int_E g_m \, d\mu_M
+   + L_m\, W_1(\mu,\mu_M) \\
+&\le \|g_m\|_{\ell^\infty(Z)}
+   + L_m\, W_1(\mu,\mu_M) \\
+&=||g_m||_{\ell^{\infty}(Z^{(m)})}+ L_m\, W_1(\mu,\mu_M)\\
+&\le \eta_{m,M}
+   + L_m\, W_1(\mu,\mu_M),
+\end{align*}
+as the algorithm is interpolated at the support points, where $r_m(z_j)=f(z_j)$, so the equality holds throughout the process. And since there is $0\le\chi_m\le1$, the last inequality is true.
+
+At the same time, on $G_{m,\epsilon}$, $\chi_m=1$ we can obtain
+\[
+\forall\alpha>0,\,\{|f-r_m|>\alpha\}\cap G_{m,\epsilon}\subset\{g_m>\alpha\}.
+\]
+
+Using the Markov's inequality,
+\begin{align*}
+    \mu(\{|f-r_m|>\alpha\}\cap G_{m,\epsilon})&\le\frac{1}{\alpha}\int_Eg_m\,d\mu\\
+    &\le\frac{1}{\alpha}(\eta_{m,M}+L_m\,W_1(\mu,\mu_M)).
+\end{align*}
+
+If the sampling grid is close enough to $\mu$, i.e.,
+\begin{equation}
+     W_1(\mu,\mu_M)\le \frac{\alpha}{4L_m}\epsilon,\label{eq:sampling grid}
+\end{equation}
+
+then we may prove our goal.
+
+It is worth noting that the $L_m$ here will change according to $m$. As $m$ increases, the order of $r_m$ may increase, leading to an increase in $L_m$ and the failure of the inequality sign. Therefore, for AAA algorithms on continuous sets, a sampling set update mechanism can be introduced, which we will elaborate on in the next chapter.
+
+We can set the stopping tolerance of the algorithm so that 
+\[
+\max\limits_{z\in Z^{(m)}}|f(z)-r_m(z)|<\frac{\alpha}{4}\epsilon,
+\]
+so we have
+\begin{equation}
+    \mu(\{|f-r_m|>\alpha\}\cap G_{m,\epsilon})\le\frac{\epsilon}{2} \label{eq:good set}
+\end{equation}
+
+Therefore, based on \ref{eq:bad set} and \ref{eq:good set} we have
+\begin{align*}
+    \mu(z\in E:|f(z)-r_m(z)|>\alpha)&\le\mu(U_{m,\epsilon)}+\mu(\{|f-r_m|>\alpha\}\cap G_{m,\epsilon})\\
+    &<\frac{\epsilon}{2}+\frac{\epsilon}{2}\\
+    &=\epsilon
+\end{align*}
+
+In summary, for given $\alpha, \epsilon>0$, if $f$ is sufficiently regular, the sampling is dense enough, and the stopping tolerances are chosen appropriately at each step, then $\mu(z\in E:|f(z)-r_m(z)|>\alpha)<\epsilon$ can be guaranteed. This means that when the sampling becomes increasingly dense, the sequence generated by the AAA algorithm converges to $f$ in measure. However, on actual fixed sampling sets, due to the possibility of the Lipschitz constant increasing with $m$, measure based convergence may require additional conditions (such as $L_m$ being bounded), which explains why uniform convergence is difficult to achieve in traditional AAA algorithms, and measure based convergence is not unconditional.
+
+
+\section{Improvement of the Algorithm}
+In this section, we discuss three important improvements to the AAA algorithm, motivated by the convergence analysis above and recent literature.
+
+The preceding discussion highlights three fundamental limitations of the traditional AAA algorithm when applied to continuum problems.
+
+Firstly, the fixed sample set $Z$ must be selected before the algorithm starts, and its density directly affects both the achievable accuracy and the behavior of the Lipschitz constants $L_m$ in the convergence‑in‑measure analysis. 
+
+Secondly, in the traditional AAA algorithm, the weights are solved by minimizing the linear residuals $||fd-n||$, which is  a linearization, resulting in the minimizing of an alternative objective rather than the true rational approximation error. This can lead to instability in the Lipschitz constants $L_m$. When the target function has sharp points or drastic changes, the approximation function will adjust the denominator accordingly to adapt to these changes, so that the alternative objective can be minimized. However, for the actual approximation errors, this may not be the case, resulting in a significant increase in $L_m$ and ultimately poor approximation performance.
+ 
+Third, the design of the traditional AAA algorithm determine that it can only obtain near-best approximations and cannot achieve a strict minimax approximation. This is because the interpolation property of the algorithm forces the error to be zero at the support point, which directly contradicts the requirement for non-zero extreme points in real domain oscillations or complex domain circularity. In addition, the proof of convergence in measure reveals that the approximation error is influenced by the growth of the Lipschitz constant, while the minimax approximation requires the error to be evenly distributed at each extreme point, which is stronger than a simple measure. Therefore, although the AAA algorithm can obtain highly accurate rational approximations with extremely high efficiency, it cannot satisfy the necessary and sufficient conditions for minimax optimality and can only be regarded as an efficient and practical near-best algorithm.
+
+In the following, we will introduce three important improvements proposed in recent papers to address the above issues: the continuum AAA algorithm\cite{driscoll2023aaarationalapproximationcontinuum}, the NL-AAA algorithm\cite{ackermann2026refinednonlinearleastsquaresmethod}, and the AAA-Lawson algorithm\cite{nakatsukasa2019algorithmrealcomplexrational}.
+
+\subsection{The Continuum AAA Algorithm}
+The continuum AAA algorithm replaces the fixed discrete set $Z$ with a dynamically refined grid. When applied to continuous domains, the user no longer needs to provide an initial discrete sample set; instead, they only specify the domain type. The algorithm will automatically select initial support points based on the domain boundary and call a function to generate uniformly sampled initial sample points. Then, as the algorithm iterates, new support points are added and the sample points are updated based on the support points to ensure that the sample points are always locally refined around the current support point. This strategy ensures that in areas where the function changes dramatically, such as near singularities, finer structures can be captured correspondingly.
+
+In addition, the continuum AAA algorithm also introduces a bad pole detection and fallback mechanism. The algorithm calculates the poles of the current rational approximation after each iteration, and if any poles are found to fall within the approximation domain
+$E$, then the current solution will not be updated. If ten consecutive steps produce bad poles, the algorithm terminates and returns the last approximation without bad poles. This practical rule ensures that the returned rational function has no poles on $E$, and this property is essential for any meaningful convergence on a continuous field.
+
+Overall, the continuum AAA algorithm ensures that the algorithm is more likely to achieve the formula \ref{eq:sampling grid} derived in Section 3.3 through the mechanism of dynamic point selection and bad pole detection, thereby approaching measure-based convergence in the continuous domain.
+
+\subsection{The NL-AAA Algorithm}
+The core improvement of the NL-AAA algorithm lies in the solution of weights. The traditional algorithm searches for the optimal solution in a distorted error space. When the target function is smooth, this distortion can be very small, but when the targeted function undergoes drastic changes, this distortion is rapidly amplified, resulting in the found solution deviating significantly from the true optimal solution. Moreover, the greedy point selection strategy in the traditional algorithm uses the current weights to select the next support point. This strategy selects points on the basis of the current error. If a denominator that appears very small in a certain region is obtained in the previous step, it will amplify the error of the numerator, resulting in the selection of the wrong support point. The NL-AAA algorithm addresses both of these issues.
+
+At each step, the NL-AAA algorithm performs inner iterations to optimize the weights. Firstly, the Sanathanan-Koerner iteration is used to modify the weights obtained by traditional algorithms, gradually approaching the true optimal solution. Then, another scan is performed through Whitfield's iteration. Finally, all weight results are compared to select the best one. If the error does not decrease, conservative measures are taken to forcefully set the last bit of the weight to zero to ensure that the error does not increase. At the same time, the greedy point selection strategy in the next step is changed to random point selection or point selection based on relative error.
+
+In general, the NL-AAA algorithm avoids excessive oscillation of the denominator through true nonlinear optimization, thereby controlling the sharp increase of $L_m$ and making the algorithm more likely to achieve measure-based convergence.
+
+\subsection{The AAA-Lawson Algorithm}
+The traditional AAA algorithm is only designed to quickly construct a  near-best rational approximation, while the AAA-Lawson algorithm pursues a minimax approximation, which means minimizing the maximum error at a given order.
+
+This algorithm consists of two stages. The first stage is identical to the AAA algorithm, while the second stage introduces the Lawson iteration. In the second stage, the algorithm uses a non- interpolated barycentric form to make the coefficients of the numerator and denominator completely independent. Then, the iteration updates the sample point weights based on the current approximation error. The weights obtained in the first stage can be used as a basis for initialization in the second stage, and the iteration stops at a certain number of steps with a rollback mechanism to ensure stability.
+
+The AAA-Lawson algorithm can simultaneously handle approximation problems in the complex field, the real field, and the discrete point set. The combination of the continuum AAA algorithm and AAA-Lawson is also discussed in \cite{driscoll2023aaarationalapproximationcontinuum}.
+
+\section{Summary and Discussion}
+The purpose of this article is to identify mechanisms that hinder convergence in the AAA algorithm, and to provide provable partial results and locatable obstacle mechanisms. Specifically, we first reviewed the traditional AAA algorithm, which uses barycentric representation and obtains rational approximation functions based on greedy selection of support points and least-squares; Subsequently, we gradually discussed the inevitability of algorithm iteration stopping, the overly strict requirement of uniform convergence, and the attempt to prove the measure-based convergence of AAA algorithm under given conditions. Based on the proof, we can infer the important factors that hinder the effectiveness of the algorithm; Finally, based on the proof and three articles published in recent years, we discussed the improvement of the algorithm.
+
+In future research, we suggest attempting to combine the given algorithms and providing further proof of their convergence speed.
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% References
+% Include references only if there are citations.
+\ifnum\value{cite}>0
+    \small
+    \bibliography{\bibfile}
+    \bibliographystyle{plain}
+\fi
+
+%% The end
+\end{document}
