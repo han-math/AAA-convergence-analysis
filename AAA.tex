@@ -397,9 +397,9 @@ Therefore, a deep understanding of the convergence properties of the AAA algorit
 
 \section{The Core of AAA Algorithm}
 \subsection{Problem Setup and Notation}
-Let $Z=\{z_1,\dots,z_M\}\subset E\subset \mathbb{C}$ be a finite set of sample points with $M\ge1$. We assume that a target function $f$ is given at least on $Z$,either via an analytic expression or as discrete data values $f(z_i)$.
+Let $Z=\{z_1,\dots,z_M\}\subset E\subset \mathbb{C}$ be a finite set of sample points with $M\ge1$. We assume that a target function $f$ is given at least on $Z$, either via an analytic expression or as discrete data values $f(z_i)$.
 
-The algorithm constructs a sequence of rational approximants $r_m$ of increasing degree by selecting support points $\{z_1,\dots,z_m\}\subset Z$ adaptively and computing associated weights $w_1,\dots,w_m$.
+The algorithm constructs a sequence of rational approximants $r_m$ of increasing degree by adaptively selecting support points $\{z_1,\dots,z_m\}\subset Z$ and then computing the associated weights $w_1,\dots,w_m$.
 
 At iteration m, denote the set of non-support sample points by
 \[
@@ -492,7 +492,7 @@ Once $w$ is found with the SVD, we can compute the $(M-m)$-vectors $N$ and $D$ w
 \end{equation}
 where $\odot$ means the Hadamard product and $\vec{f}=(f_1,\dots,f_m)^T$.
 
-These correspond to the values of $n(z)$ and $d(z)$ at the points $z\in Z^{(m)}$. Finally, to obtain an approximation $M$-vector $R$ corresponding to $r(z)$ for all $z\in Z$, we set $R(Z)=f(Z)$ and $R(Z^{(m)})=N./D$. We then select the point in $Z^{(m)}$ with the largest residual and proceed to the next iteration.
+These correspond to the values of $n(z)$ and $d(z)$ at the points $z\in Z^{(m)}$. Finally, to obtain an approximation $M$-vector $R$ corresponding to $r(z)$ for all $z\in Z$, we can set $R(Z)=f(Z)$ and $R(Z^{(m)})=N./D$. We then select the point in $Z^{(m)}$ with the largest residual and proceed to the next iteration.
 
 \subsection{Stopping Criterion and Cleanup Strategy}
 The iteration terminates when the relative nonlinear residual on the test set $Z^{(m)}$ falls below a tolerance
@@ -553,7 +553,7 @@ g_m(z)=|f(z)-r_m(z)|\chi_m(z)
 \]
 is Lipschitz on $E$.
 
-Let $L_m=\text{Lip}(g_m)$ and $\mu_M=\frac{1}{M}\sum\limits_{i=1}^M\delta_{z_i}$. Assume $L_m>0$, define $\varphi=g_m/L_m$, then $\text{Lip}(\varphi)\le1$, based on the Kantorovich-Rubinstein duality
+Let $L_m=\text{Lip}(g_m)$ and $\mu_M=\frac{1}{M}\sum\limits_{i=1}^M\delta_{z_i}$. Assume $L_m>0$, define $\varphi=g_m/L_m$, then we have $\text{Lip}(\varphi)\le1$, based on the Kantorovich-Rubinstein duality
 \begin{align*}
     W_1(\mu,\mu_M)
     &=\sup\limits_{\text{Lip}(\varphi)\le1}|\int_E\varphi\,d\mu-\int_E\varphi\,d\mu_M|\\
