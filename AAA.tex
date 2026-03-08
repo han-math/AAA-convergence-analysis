@@ -372,7 +372,7 @@
 \maketitle
 
 \begin{abstract}
-This article first summarizes the core of the AAA algorithm, including barycentric rational representation, greedy point selection, least-squares steps, the stopping criterion, and the cleanup strategy for Froissart doublets. Then, we discuss three notions of convergence for the AAA algorithm: termination on a finite set, uniform convergence, and convergence in measure. Based on the analysis, we conclude that convergence in measure is the most suitable framework for the AAA algorithm, and we show how it can be achieved under appropriate assumptions. Finally, we introduce three improved algorithms for the AAA algorithm and analyzes their improvement points then relate them to the convergence analysis.
+This article first summarizes the core of the AAA algorithm, including its barycentric rational representation, greedy point selection, least-squares step, stopping criterion, and cleanup strategy for Froissart doublets. Then, we discuss three notions of convergence for the AAA algorithm: termination on a finite set, uniform convergence, and convergence in measure. Based on the analysis, we conclude that convergence in measure is the most suitable framework for the AAA algorithm, and we show how it can be achieved under appropriate assumptions. Finally, we introduce three improved algorithms for the AAA algorithm and analyze their key improvements, then relate them to the convergence analysis.
 \end{abstract}
 
 \textbf{Keywords}: the AAA algorithm, convergence, Continuum AAA, NL-AAA, AAA-Lawson
@@ -397,8 +397,9 @@ Therefore, a deep understanding of the convergence properties of the AAA algorit
 
 \section{The Core of AAA Algorithm}
 \subsection{Problem Setup and Notation}
-Let $Z=\{z_1,\dots,z_M\}\subset E\subset \mathbb{C}$ be a finite set of sample points with $M\ge1$. We assume that a target function $f$ is given at least on $Z$,
-either via an analytic expression or as discrete data values $f(z_i)$. The algorithm constructs a sequence of rational approximants $r_m$ of increasing degree by selecting support points $\{z_1,\dots,z_m\}\subset Z$ adaptively and computing associated weights $w_1,\dots,w_m$.
+Let $Z=\{z_1,\dots,z_M\}\subset E\subset \mathbb{C}$ be a finite set of sample points with $M\ge1$. We assume that a target function $f$ is given at least on $Z$,either via an analytic expression or as discrete data values $f(z_i)$.
+
+The algorithm constructs a sequence of rational approximants $r_m$ of increasing degree by selecting support points $\{z_1,\dots,z_m\}\subset Z$ adaptively and computing associated weights $w_1,\dots,w_m$.
 
 At iteration m, denote the set of non-support sample points by
 \[
@@ -501,7 +502,7 @@ The iteration terminates when the relative nonlinear residual on the test set $Z
 
 However, approximations that satisfy this criterion may contain Froissart doublets, which are pole-zero pairs that almost cancel each other out. Numerically, these poles are accompanied by extremely small residues. Although they have little impact on the function value, the pole in the center can cause the function to approach infinity locally, seriously disrupting the uniform convergence of the approximation function. Therefore, the AAA algorithm includes a cleaning mechanism for Froissart doublets.
 
-In the AAA algorithm, these doublets are identified by inspecting the residues of the computed poles. If a pole has a residue with magnitude less than a threshold, it is flagged as spurious. The algorithm then performs a cleanup step: it removes the support point $z_j$ nearest to the spurious pole from the basis and re-solves \ref{eq:linearized} --- 
+In the AAA algorithm, these doublets are identified by inspecting the residues of the computed poles. If a pole has a residue with magnitude less than a threshold, it is flagged as spurious. The algorithm then performs a cleanup step: it removes the support point $z_j$ nearest to the spurious pole from the basis and resolves \ref{eq:linearized} --- 
 the least-squares problem, with the reduced support set. This post-processing ensures that the final approximation reduces the presence of these doublets effectively.
 
 The article \cite{Nakatsukasa_2018} points out that using a default tolerance of $10^{-13}$ for termination conditions is effective, and the threshold for spurious poles can also be set to $10^{-13}$ accordingly.
